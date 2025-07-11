@@ -17,8 +17,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 #[Api\ApiResource(
     normalizationContext: ['groups' => ['read_company']],
-    denormalizationContext: ['groups' => ['write_company']]
+    denormalizationContext: ['groups' => ['write_company']],
 )]
+#[Api\GetCollection()]
+#[Api\Get()]
 class Company
 {
     use TimestampableEntity;
@@ -29,12 +31,12 @@ class Company
     #[Api\ApiProperty(identifier:false)]
     private ?int $id = null;
 
-    #[Groups(['read_company', 'write_company', 'read_job'])]
     #[ORM\Column(length: 255)]
+    #[Groups(['read_company', 'write_company', 'read_job', 'read_application'])]
     private ?string $name = null;
 
-    #[Groups(['read_company', 'write_company'])]
     #[ORM\Column(length: 2000)]
+    #[Groups(['read_company', 'write_company'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -77,7 +79,7 @@ class Company
     private ?string $youtube = null;
 
     #[ORM\ManyToOne(inversedBy: 'companies')]
-    #[Groups(['read_company', 'write_company'])]
+    #[Groups(['read_company', 'write_company', 'read_application' ])]
     private ?User $user = null;
 
     /**

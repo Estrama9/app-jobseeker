@@ -31,12 +31,14 @@ class Job
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['read_job', 'write_job'])]
+
     #[ORM\Column(length: 255)]
+    #[Groups(['read_job', 'write_job'])]
     private ?string $title = null;
 
-    #[Groups(['read_job', 'write_job'])]
+
     #[ORM\Column(length: 2000)]
+    #[Groups(['read_job', 'write_job'])]
     private ?string $description = null;
 
     #[ORM\Column(enumType: City::class)]
@@ -79,7 +81,7 @@ class Job
     private Collection $applications;
 
     #[ORM\ManyToOne(inversedBy: 'jobs')]
-    #[Groups(['read_job', 'write_job'])]
+    #[Groups(['read_job', 'write_job', 'read_application'])]
     private ?Company $company = null;
 
     public function __construct()

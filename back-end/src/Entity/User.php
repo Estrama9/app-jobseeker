@@ -5,7 +5,6 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Enum\City;
-use App\Enum\Entitlement;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -56,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read_user', 'write_user', 'read_company'])]
+    #[Groups(['read_user', 'write_user', 'read_company', 'read_application'])]
     private ?string $fullname = null;
 
      #[ORM\Column(length: 255, nullable: true)]
@@ -66,8 +65,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(enumType: City::class, nullable: true)]
     private ?City $city = null;
 
-    #[ORM\Column(enumType: Entitlement::class, nullable: true)]
-    private ?Entitlement $entitlement = null;
+    // #[ORM\Column(enumType: Entitlement::class, nullable: true)]
+    // private ?Entitlement $entitlement = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -123,27 +122,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
+    // /**
+    //  * @see UserInterface
+    //  */
+    // public function getRoles(): array
+    // {
+    //     $roles = $this->roles;
+    //     // guarantee every user at least has ROLE_USER
+    //     $roles[] = 'ROLE_USER';
+
+    //     return array_unique($roles);
+    // }
+
+
+    //  /**
+    //  * @param list<string> $roles
+    //  */
+    // public function setRoles(array $roles): static
+    // {
+    //     $this->roles = $roles;
+
+    //     return $this;
+    // }
+
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+
+        // Toujours inclure ROLE_USER
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
-        $this->roles = $roles;
+        // Toujours forcer ROLE_USER
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
 
+        $this->roles = array_unique($roles);
         return $this;
     }
+
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -184,17 +208,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getEntitlement(): ?Entitlement
-    {
-        return $this->entitlement;
-    }
+    // public function getEntitlement(): ?Entitlement
+    // {
+    //     return $this->entitlement;
+    // }
 
-    public function setEntitlement(Entitlement $entitlement): static
-    {
-        $this->entitlement = $entitlement;
+    // public function setEntitlement(Entitlement $entitlement): static
+    // {
+    //     $this->entitlement = $entitlement;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

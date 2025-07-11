@@ -5,9 +5,20 @@ namespace App\Entity;
 use App\Enum\StatusApplication;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata as Api;
+use App\Doctrine\OwnerableInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
-class Application
+#[Api\ApiResource(
+    normalizationContext: ['groups' => ['read_application']],
+    denormalizationContext: ['groups' => ['write_application']],
+    security: 'is_granted("ROLE_USER")'
+)]
+#[Api\GetCollection()]
+#[Api\Get()]
+#[Api\Get()]
+class Application implements OwnerableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,6 +26,7 @@ class Application
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read_application', 'write_application'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
@@ -36,6 +48,7 @@ class Application
     private ?Candidate $candidate = null;
 
     #[ORM\ManyToOne(inversedBy: 'applications')]
+    #[Groups(['read_application'])]
     private ?Job $job = null;
 
     public function __construct()
@@ -145,4 +158,33 @@ class Application
 
         return $this;
     }
+
+    public function setUser(User $user): void
+{
+    if ($this->getCandidate()) {
+        $this->getCandidate()->setUser($user);
+        return;
+    }
+
+    if ($this->getJob()?->getCompany()) {
+        $this->getJob()->getCompany()->setUser($user);
+    }
+}
+
+
+    public function getUser(): ?User
+{
+    if ($this->getCandidate()) {
+        return $this->getCandidate()->getUser(); // if Candidate wraps a User
+    }
+
+    if ($this->getJob() && $this->getJob()->getCompany()->getUser()) {
+        return $this->getJob()->getCompany()->getUser(); // assuming Job has getEmployer(): ?User
+    }
+
+    return null;
+}
+
+
+
 }

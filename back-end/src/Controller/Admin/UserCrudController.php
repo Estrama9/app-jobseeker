@@ -37,7 +37,7 @@ class UserCrudController extends AbstractCrudController
         yield ArrayField::new('roles');
         yield TextField::new('country');
         yield ChoiceField::new('city')->setChoices(City::cases());
-        yield ChoiceField::new('entitlement')->setChoices(Entitlement::cases());
+        // yield ChoiceField::new('entitlement')->setChoices(Entitlement::cases());
         yield DateField::new('createdAt');
         yield DateField::new('updatedAt');
         yield BooleanField::new('isVerified');

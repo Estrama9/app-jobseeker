@@ -3,3 +3,9 @@ api.jobseeker.wip {
 
     reverse_proxy localhost:8000
 }
+
+jobseeker.wip {
+    tls internal
+
+    reverse_proxy localhost:4200
+}

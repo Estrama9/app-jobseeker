@@ -11,8 +11,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata as Api;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
+#[Api\ApiResource(
+    normalizationContext: ['groups' => ['read_candidate']],
+    denormalizationContext: ['groups' => ['write_candidate']],
+    // security: 'is_granted("ROLE_USER") and is_granted("ROLE_CANDIDATE")'
+)]
+#[Api\GetCollection()]
+#[Api\Get()]
 class Candidate
 {
     #[ORM\Id]

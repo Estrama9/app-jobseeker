@@ -54,6 +54,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Companies', 'fas fa-box', Company::class);
         yield MenuItem::linkToCrud('Jobs', 'fas fa-box', Job::class);
         yield MenuItem::linkToCrud('Applications', 'fas fa-box', Application::class);
+        // dd($this->getUser()->getRoles());
 
     }
 }
