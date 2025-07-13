@@ -13,9 +13,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata as Api;
+use App\Controller\Api\MeAction;
 use App\Enum\UserRole;
 use Symfony\Component\Serializer\Attribute\Groups;
 use App\Entity\Company;
+use ApiPlatform\OpenApi\Model;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -29,10 +31,19 @@ use App\Entity\Company;
     security: 'is_granted("ROLE_ADMIN")',
     securityMessage: 'Only admins can list users.'
 )]
-#[Api\Get(
-    security: 'is_granted("ROLE_ADMIN")',
-    securityMessage: 'Only admins can see user details.'
+// #[Api\Get(
+//     security: 'is_granted("ROLE_ADMIN")',
+//     securityMessage: 'Only admins can see user details.'
 
+// )]
+#[Api\Get(
+    uriTemplate: '/me',
+    security: 'is_granted("ROLE_USER")',
+    controller: MeAction::class,
+    read: false,
+    openapi: new Model\Operation(
+        summary: 'Show current user profile'
+    )
 )]
 #[Api\Post(
     security:'true' // accessible à tous pour créer un utilisateur
