@@ -15,6 +15,7 @@ class UserFixtures extends Fixture
     const USER1 = 'user1';
     const USER2 = 'user2';
     const USER3 = 'user3';
+    const USER4 = 'user4';
     public function load(ObjectManager $manager): void
     {
         $user = new User();
@@ -29,7 +30,7 @@ class UserFixtures extends Fixture
         $user = new User();
         $user->setEmail('toto@gmail.com');
         $user->setPlainPassword('demo');
-        $user->setRoles([UserRole::USER->value, UserRole::CANDIDATE->value]);
+        $user->setRoles([UserRole::CANDIDATE->value]);
         $user->setFullName('Toto Doe');
         $user->setCity(City::BORDEAUX);
         // $user->setEntitlement(Entitlement::CANDIDATE);
@@ -39,7 +40,7 @@ class UserFixtures extends Fixture
         $user = new User();
         $user->setEmail('tata@gmail.com');
         $user->setPlainPassword('demo');
-        $user->setRoles([UserRole::USER->value, UserRole::EMPLOYER->value]);
+        $user->setRoles([UserRole::EMPLOYER->value]);
         $user->setFullName('Tata Doe');
         $user->setCity(City::TOULOUSE);
         // $user->setEntitlement(Entitlement::EMPLOYER);
@@ -49,11 +50,21 @@ class UserFixtures extends Fixture
         $user = new User();
         $user->setEmail('titi@gmail.com');
         $user->setPlainPassword('demo');
-        $user->setRoles([UserRole::USER->value, UserRole::EMPLOYER->value]);
+        $user->setRoles([UserRole::EMPLOYER->value]);
         $user->setFullName('Titi Doe');
         $user->setCity(City::LILLE);
         // $user->setEntitlement(Entitlement::EMPLOYER);
         $this->addReference(self::USER3, $user);
+        $manager->persist($user);
+
+        $user = new User();
+        $user->setEmail('tete@gmail.com');
+        $user->setPlainPassword('demo');
+        $user->setRoles([UserRole::CANDIDATE->value]);
+        $user->setFullName('Tete Doe');
+        $user->setCity(City::NICE);
+        // $user->setEntitlement(Entitlement::EMPLOYER);
+        $this->addReference(self::USER4, $user);
         $manager->persist($user);
 
         $manager->flush();

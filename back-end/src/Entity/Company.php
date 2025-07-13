@@ -20,7 +20,20 @@ use Gedmo\Mapping\Annotation as Gedmo;
     denormalizationContext: ['groups' => ['write_company']],
 )]
 #[Api\GetCollection()]
-#[Api\Get()]
+#[Api\Get(
+    security: ' is_granted("ROLE_ADMIN") or is_granted("ROLE_CANDIDATE") or object.getUser() == user',
+    securityMessage: 'Only the employer himselfs or users with ROLE_CANDIDATE or ROLE_ADMIN can access this data.')]
+#[Api\Post(
+    security: 'is_granted("ROLE_EMPLOYER")',
+    securityMessage: 'Only the users with ROLE_EMPLOYER can add data.')]
+#[Api\Patch(
+    security: 'object.getUser() == user',
+    securityMessage: 'Only the employer himself can update his data.'
+)]
+#[Api\Delete(
+    security: 'is_granted("ROLE_ADMIN") or object.getUser() == user',
+    securityMessage: 'Only the employer himself or an admin can delete this data.'
+)]
 class Company
 {
     use TimestampableEntity;
@@ -32,60 +45,65 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read_company', 'write_company', 'read_job', 'read_application'])]
+    #[Groups(['read_company', 'write_company', 'read_application'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 2000)]
     #[Groups(['read_company', 'write_company'])]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\Column(enumType: City::class)]
+    #[ORM\Column(enumType: City::class, nullable: true)]
     private ?City $city = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $teamSize = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $establishmentDate = null;
 
-    #[ORM\Column(enumType: Industry::class)]
+    #[ORM\Column(enumType: Industry::class, nullable: true)]
     private ?Industry $industry = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoUrl = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $linkedin = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $github = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $x = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagram = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebook = null;
 
-     #[ORM\Column(length: 255)]
+     #[ORM\Column(length: 255, nullable: true)]
     private ?string $youtube = null;
 
-    #[ORM\ManyToOne(inversedBy: 'companies')]
-    #[Groups(['read_company', 'write_company', 'read_application' ])]
+    // #[ORM\ManyToOne(inversedBy: 'companies')]
+    // #[Groups(['read_application' ])]
+    // private ?User $user = null;
+
+    #[ORM\OneToOne(inversedBy: 'company', targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false, unique: true)]
+    #[Groups(['read_application'])]
     private ?User $user = null;
 
     /**
      * @var Collection<int, Job>
      */
-    #[ORM\OneToMany(targetEntity: Job::class, mappedBy: 'company', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Job::class, mappedBy: 'company', cascade: ['remove', 'persist'])]
     private Collection $jobs;
 
     #[ORM\Column(length: 128, unique: true)]

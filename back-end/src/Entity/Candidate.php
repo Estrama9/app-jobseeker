@@ -18,10 +18,22 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[Api\ApiResource(
     normalizationContext: ['groups' => ['read_candidate']],
     denormalizationContext: ['groups' => ['write_candidate']],
-    // security: 'is_granted("ROLE_USER") and is_granted("ROLE_CANDIDATE")'
 )]
 #[Api\GetCollection()]
-#[Api\Get()]
+#[Api\Get(
+    security: ' is_granted("ROLE_ADMIN") or is_granted("ROLE_EMPLOYER") or object.getUser() == user',
+    securityMessage: 'Only the users with "ROLE_CANDIDATE" himselfs or users with "ROLE_EMPLOYER" or "ROLE_ADMIN can access this data.')]
+#[Api\Post(
+    security: 'is_granted("ROLE_CANDIDATE")',
+    securityMessage: 'Only the users with "ROLE_CANDIDATE" can add data.')]
+#[Api\Patch(
+    security: 'object.getUser() == user',
+    securityMessage: 'Only the candidate himself can update his data.'
+)]
+#[Api\Delete(
+    security: 'is_granted("ROLE_ADMIN") or object.getUser() == user',
+    securityMessage: 'Only the candidate himself or an admin can delete this data.'
+)]
 class Candidate
 {
     #[ORM\Id]
@@ -30,45 +42,47 @@ class Candidate
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $titre = null;
+    #[Groups(['read_candidate', 'write_candidate'])]
+    private ?string $title = null;
 
-    #[ORM\Column(length: 2000)]
+    #[ORM\Column(length: 2000, nullable: true)]
     private ?string $biography = null;
 
     #[ORM\Column(enumType: Gender::class)]
+    #[Groups(['read_candidate', 'write_candidate'])]
     private ?Gender $gender = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $birthday = null;
 
-    #[ORM\Column(enumType: EducationLevel::class)]
+    #[ORM\Column(enumType: EducationLevel::class, nullable: true)]
     private ?EducationLevel $educationLevel = null;
 
-    #[ORM\Column(enumType: ExperienceLevel::class)]
+    #[ORM\Column(enumType: ExperienceLevel::class, nullable: true)]
     private ?ExperienceLevel $experienceLevel = null;
 
     #[ORM\Column(enumType: StatusCandidate::class)]
     private ?StatusCandidate $statusCandidate = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $linkedin = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $github = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $x = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagram = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebook = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $youtube = null;
 
     /**
@@ -77,7 +91,10 @@ class Candidate
     #[ORM\OneToMany(targetEntity: Application::class, mappedBy: 'candidate', cascade: ['remove'])]
     private Collection $applications;
 
-    #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
+    // #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'candidate')]
+    #[ORM\JoinColumn(nullable: false, unique: true)]
+    #[Groups(['read_candidate'])]
     private ?User $user = null;
 
     public function __construct()
@@ -289,14 +306,14 @@ class Candidate
         return $this;
     }
 
-    public function getTitre(): ?string
+    public function getTitle(): ?string
     {
-        return $this->titre;
+        return $this->title;
     }
 
-    public function setTitre(string $titre): static
+    public function setTitle(string $title): static
     {
-        $this->titre = $titre;
+        $this->title = $title;
 
         return $this;
     }

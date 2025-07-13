@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Enum\City;
 use App\Enum\Entitlement;
+use App\Enum\UserRole;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -34,7 +35,14 @@ class UserCrudController extends AbstractCrudController
             ->onlyOnForms()
             ->setHelp('Leave blank to keep current password.');
             //->setPermission('["ROLE_ADMIN"]');
-        yield ArrayField::new('roles');
+        // yield ChoiceField::new('roles')->setChoices(UserRole::cases());
+        // yield ArrayField::new('roles');
+        yield ChoiceField::new('roles')
+        ->setChoices(array_combine(
+                array_map(fn(UserRole $role) => $role->value, UserRole::cases()),
+                array_map(fn(UserRole $role) => $role->value, UserRole::cases())
+        ))
+        ->allowMultipleChoices();
         yield TextField::new('country');
         yield ChoiceField::new('city')->setChoices(City::cases());
         // yield ChoiceField::new('entitlement')->setChoices(Entitlement::cases());

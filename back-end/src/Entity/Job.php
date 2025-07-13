@@ -14,13 +14,34 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata as Api;
+use App\Doctrine\OwnerableInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
 #[Api\ApiResource(
     normalizationContext: ['groups' => ['read_job']],
     denormalizationContext: ['groups' => ['write_job']]
 )]
+#[Api\GetCollection(forceEager: false)]
+#[Api\Get(
+    security: 'is_granted("ROLE_CANDIDATE") or object.getCompany().getUser() == user',
+    securityMessage: 'Only the employer himself can access this data.',
+    forceEager: false
+)]
+#[Api\Post(
+    security: 'is_granted("ROLE_EMPLOYER")',
+    securityMessage: 'Only the users with ROLE_EMPLOYER can add this data.'
+)]
+#[Api\Patch(
+    security: 'object.getCompany().getUser() == user',
+    securityMessage: 'Only the employer himself can update this data.'
+)]
+#[Api\Delete(
+    security: 'is_granted("ROLE_ADMIN") or object.getCompany().getUser() == user',
+    securityMessage: 'Only the employer himself or an admin can delete this data.'
+)]
+
 // #[Api\ApiFilter(SearchFilter::class, properties:['company.name' => 'exact'])]
 // #[Api\ApiFilter(SearchFilter::class, properties:['company.name' => 'ipartial'])]
 #[Api\ApiFilter(SearchFilter::class, properties:['company.slug' => 'ipartial'])]
@@ -41,37 +62,37 @@ class Job
     #[Groups(['read_job', 'write_job'])]
     private ?string $description = null;
 
-    #[ORM\Column(enumType: City::class)]
+    #[ORM\Column(enumType: City::class, nullable: true)]
     private ?City $city = null;
 
-    #[ORM\Column(enumType: JobType::class)]
+    #[ORM\Column(enumType: JobType::class , nullable: true)]
     private ?JobType $jobType = null;
 
-    #[ORM\Column(enumType: WorkMode::class)]
+    #[ORM\Column(enumType: WorkMode::class , nullable: true)]
     private ?WorkMode $workMode = null;
 
-    #[ORM\Column(enumType: StatusJob::class)]
+    #[ORM\Column(enumType: StatusJob::class , nullable: true)]
     private ?StatusJob $statusJob = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $minSalary = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $maxSalary = null;
 
-    #[ORM\Column(enumType: EducationLevel::class)]
+    #[ORM\Column(enumType: EducationLevel::class , nullable: true)]
     private ?EducationLevel $educationLevel = null;
 
-    #[ORM\Column(enumType: ExperienceLevel::class)]
+    #[ORM\Column(enumType: ExperienceLevel::class , nullable: true)]
     private ?ExperienceLevel $experienceLevel = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $hiringLimit = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expirationDate = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
@@ -80,8 +101,8 @@ class Job
     #[ORM\OneToMany(targetEntity: Application::class, mappedBy: 'job' , cascade: ['remove'])]
     private Collection $applications;
 
-    #[ORM\ManyToOne(inversedBy: 'jobs')]
-    #[Groups(['read_job', 'write_job', 'read_application'])]
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'jobs')]
+    #[Groups(['read_application'])]
     private ?Company $company = null;
 
     public function __construct()
@@ -298,4 +319,30 @@ class Job
         return $this->getTitle();
     }
 
+
+//     public function setUser(User $user): void
+//     {
+//         if ($this->getCompany()) {
+//             $this->getCompany()->setUser($user);
+//             return;
+//         }
+
+//         if ($this?->getCompany()) {
+//             $this->getCompany()->setUser($user);
+//         }
+//     }
+
+
+//     public function getUser(): ?User
+//     {
+//         if ($this->getCompany()) {
+//             return $this->getCompany()->getUser(); // if Candidate wraps a User
+//         }
+
+//         if ($this->getCompany() && $this->getCompany()->getUser()) {
+//             return $this->getCompany()->getUser(); // assuming Job has getEmployer(): ?User
+//         }
+
+//         return null;
+//     }
 }

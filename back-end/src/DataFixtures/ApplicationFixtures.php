@@ -23,14 +23,14 @@ class ApplicationFixtures extends Fixture implements DependentFixtureInterface
         $application->setJob($this->getReference(JobFixtures::JOB1, Job::class));
         $manager->persist($application);
 
-        // $application = new Application();
-        // $application->setStatusApplication(StatusApplication::ACTIVE);
-        // $application->setCv('');
-        // $application->setCoverLetter('');
-        // $application->setTitle('Serveur en Salle');
-        // $application->setCandidate($this->getReference(CandidateFixtures::CANDIDATE1, Candidate::class));
-        // $application->setJob($this->getReference(JobFixtures::JOB2, Job::class));
-        // $manager->persist($application);
+        $application = new Application();
+        $application->setStatusApplication(StatusApplication::ACTIVE);
+        $application->setCv('');
+        $application->setCoverLetter('');
+        $application->setTitle('Serveur en Salle');
+        $application->setCandidate($this->getReference(CandidateFixtures::CANDIDATE2, Candidate::class));
+        $application->setJob($this->getReference(JobFixtures::JOB2, Job::class));
+        $manager->persist($application);
 
         $manager->flush();
     }

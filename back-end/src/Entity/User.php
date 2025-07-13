@@ -13,7 +13,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata as Api;
+use App\Enum\UserRole;
 use Symfony\Component\Serializer\Attribute\Groups;
+use App\Entity\Company;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -23,10 +25,27 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['read_user']],
     denormalizationContext: ['groups' => ['write_user']]
 )]
-#[Api\GetCollection()]
-#[Api\Get()]
-#[Api\Post()]
-#[Api\Patch()]
+#[Api\GetCollection(
+    security: 'is_granted("ROLE_ADMIN")',
+    securityMessage: 'Only admins can list users.'
+)]
+#[Api\Get(
+    security: 'is_granted("ROLE_ADMIN")',
+    securityMessage: 'Only admins can see user details.'
+
+)]
+#[Api\Post(
+    security:'true' // accessible à tous pour créer un utilisateur
+
+)]
+#[Api\Patch(
+    security: 'object == user',
+    securityMessage: 'You can only edit your own profile.'
+)]
+#[Api\Delete(
+    security: 'is_granted("ROLE_ADMIN") or object == user',
+    securityMessage: 'You can delete yourself or must be admin to delete others.'
+)]
 #[Api\ApiFilter(SearchFilter::class, properties:['fullname' => 'ipartial'])]
 #[Api\ApiFilter(OrderFilter::class, properties:['fullname'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -37,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['read_user', 'write_user'])]
+    #[Groups(['read_user', 'write_user', 'read_candidate'])]
     private ?string $email = null;
 
     /**
@@ -45,17 +64,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
-    #[Groups(['read_user', 'write_user'])]
+
+     #[Groups(['write_user'])]
     private ?string $plainPassword = null;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    private array $roles = [];
+    #[Groups(['write_user'])]
+    #[ORM\Column(type: 'json')]
+    private array $roles = [UserRole::USER->value];
+
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read_user', 'write_user', 'read_company', 'read_application'])]
+    #[Groups(['read_user', 'write_user', 'read_candidate', 'read_company', 'read_application'])]
     private ?string $fullname = null;
 
      #[ORM\Column(length: 255, nullable: true)]
@@ -74,14 +93,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    /**
-     * @var Collection<int, Compagny>
-     */
-    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'user', cascade: ['remove'])]
-    private Collection $companies;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Candidate $candidate = null;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Company::class, cascade: ['persist', 'remove'])]
+    private ?Company $company = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
@@ -91,8 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
         $this->updatedAt = $now;
-        $this->companies = new ArrayCollection();
-        $this->roles = ['ROLE_USER'];
+        // $this->companies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,51 +138,72 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-    // /**
-    //  * @see UserInterface
-    //  */
     // public function getRoles(): array
     // {
     //     $roles = $this->roles;
-    //     // guarantee every user at least has ROLE_USER
-    //     $roles[] = 'ROLE_USER';
+
+    //     // Toujours inclure ROLE_USER
+    //     if (!in_array('ROLE_USER', $roles, true)) {
+    //         $roles[] = 'ROLE_USER';
+    //     }
 
     //     return array_unique($roles);
     // }
 
-
-    //  /**
-    //  * @param list<string> $roles
-    //  */
     // public function setRoles(array $roles): static
     // {
-    //     $this->roles = $roles;
+    //     // Toujours forcer ROLE_USER
+    //     if (!in_array('ROLE_USER', $roles, true)) {
+    //         $roles[] = 'ROLE_USER';
+    //     }
 
+    //     $this->roles = array_unique($roles);
     //     return $this;
     // }
 
+        /**
+     * @return string[]
+     */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roleStrings = $this->roles;
 
         // Toujours inclure ROLE_USER
-        if (!in_array('ROLE_USER', $roles, true)) {
-            $roles[] = 'ROLE_USER';
+        if (!in_array(UserRole::USER->value, $roleStrings, true)) {
+            $roleStrings[] = UserRole::USER->value;
         }
 
-        return array_unique($roles);
+        return array_unique($roleStrings);
     }
 
+
+        /**
+     * @param array<UserRole|string> $roles
+     */
     public function setRoles(array $roles): static
     {
-        // Toujours forcer ROLE_USER
-        if (!in_array('ROLE_USER', $roles, true)) {
-            $roles[] = 'ROLE_USER';
+        $enumRoles = array_map(function ($role) {
+            if (is_string($role)) {
+                return UserRole::from($role);
+            }
+
+            if ($role instanceof UserRole) {
+                return $role;
+            }
+
+            throw new \InvalidArgumentException('Invalid role type.');
+        }, $roles);
+
+        $roleValues = array_map(fn(UserRole $role) => $role->value, $enumRoles);
+
+        if (!in_array(UserRole::USER->value, $roleValues, true)) {
+            $roleValues[] = UserRole::USER->value;
         }
 
-        $this->roles = array_unique($roles);
+        $this->roles = array_unique($roleValues);
         return $this;
     }
+
 
 
     /**
@@ -244,35 +281,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Compagny>
-     */
-    public function getCompanies(): Collection
+    public function getCompany(): ?Company
     {
-        return $this->companies;
+        return $this->company;
     }
 
-    public function addCompany(Company $company): static
+    public function setCompany(?Company $company): static
     {
-        if (!$this->companies->contains($company)) {
-            $this->companies->add($company);
-            $company->setUser($this);
-        }
-
-        return $this;
+        // unset the owning side of the relation if necessary
+    if ($company === null && $this->company !== null) {
+        $this->company->setUser(null);
     }
 
-    public function removeCompany(Company $company): static
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getUser() === $this) {
-                $company->setUser(null);
-            }
-        }
-
-        return $this;
+    // set the owning side of the relation if necessary
+    if ($company !== null && $company->getUser() !== $this) {
+        $company->setUser($this);
     }
+
+    $this->company = $company;
+
+    return $this;
+}
 
     #[\Deprecated]
     public function eraseCredentials(): void
