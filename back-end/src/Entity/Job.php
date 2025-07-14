@@ -14,7 +14,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata as Api;
-use App\Doctrine\OwnerableInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 
@@ -52,19 +51,21 @@ class Job
     #[ORM\Column]
     private ?int $id = null;
 
-
     #[ORM\Column(length: 255)]
     #[Groups(['read_job', 'write_job'])]
     private ?string $title = null;
 
-
     #[ORM\Column(length: 2000)]
-    #[Groups(['read_job', 'write_job'])]
     private ?string $description = null;
 
+     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $country = null;
+
+    #[Groups(['read_job'])]
     #[ORM\Column(enumType: City::class, nullable: true)]
     private ?City $city = null;
 
+    #[Groups(['read_job'])]
     #[ORM\Column(enumType: JobType::class , nullable: true)]
     private ?JobType $jobType = null;
 
@@ -74,9 +75,11 @@ class Job
     #[ORM\Column(enumType: StatusJob::class , nullable: true)]
     private ?StatusJob $statusJob = null;
 
+    #[Groups(['read_job'])]
     #[ORM\Column(nullable: true)]
     private ?int $minSalary = null;
 
+    #[Groups(['read_job'])]
     #[ORM\Column(nullable: true)]
     private ?int $maxSalary = null;
 
@@ -102,13 +105,14 @@ class Job
     private Collection $applications;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'jobs')]
-    #[Groups(['read_application'])]
+    #[Groups(['read_application', 'read_job'])]
     private ?Company $company = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->applications = new ArrayCollection();
+        $this->country = 'France';
     }
 
     public function getId(): ?int
@@ -345,4 +349,16 @@ class Job
 
 //         return null;
 //     }
+
+public function getCountry(): ?string
+{
+    return $this->country;
+}
+
+public function setCountry(?string $country): static
+{
+    $this->country = $country;
+
+    return $this;
+}
 }

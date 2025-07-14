@@ -18,6 +18,7 @@ use App\Enum\UserRole;
 use Symfony\Component\Serializer\Attribute\Groups;
 use App\Entity\Company;
 use ApiPlatform\OpenApi\Model;
+use App\DataPersister\UserEmailVerification;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -25,7 +26,7 @@ use ApiPlatform\OpenApi\Model;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[Api\ApiResource(
     normalizationContext: ['groups' => ['read_user']],
-    denormalizationContext: ['groups' => ['write_user']]
+    denormalizationContext: ['groups' => ['write_user']],
 )]
 #[Api\GetCollection(
     security: 'is_granted("ROLE_ADMIN")',
@@ -46,6 +47,7 @@ use ApiPlatform\OpenApi\Model;
     )
 )]
 #[Api\Post(
+    processor: UserEmailVerification::class,
     security:'true' // accessible à tous pour créer un utilisateur
 
 )]

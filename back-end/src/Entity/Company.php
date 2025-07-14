@@ -45,7 +45,7 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read_company', 'write_company', 'read_application'])]
+    #[Groups(['read_company', 'write_company', 'read_application', 'read_job'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 2000)]
@@ -115,6 +115,7 @@ class Company
     public function __construct()
     {
         $this->jobs = new ArrayCollection();
+        $this->country = 'France';
     }
 
     public function getId(): ?int
