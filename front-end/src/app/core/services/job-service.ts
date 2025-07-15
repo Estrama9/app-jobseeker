@@ -1,32 +1,57 @@
-// src/app/services/job.service.ts
+// core/services/job-service.ts
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Job } from '../interfaces/JobInterface';
+
+interface ApiResponse<T> {
+  member: T[];
+  totalItems: number;
+  // autres propriétés possibles...
+}
 
 @Injectable({ providedIn: 'root' })
 export class JobService {
-  private baseUrl = 'http://api.jobseeker.wip:8000';
+  private baseUrl = 'https://api.jobseeker.wip';
 
   constructor(private http: HttpClient) {}
 
   getJobs(): Observable<Job[]> {
-    return this.http.get<Job[]>(`${this.baseUrl}/api/jobs`);
-  }
+  return this.http.get<ApiResponse<Job>>(`${this.baseUrl}/api/jobs`, {
+    headers: { accept: 'application/ld+json' }
+  }).pipe(
+    map(response => response.member) // Extract the array of jobs
+  );
+}
 
   getJob(id: number | string): Observable<Job> {
-    return this.http.get<Job>(`${this.baseUrl}/api/jobs/${id}`);
+    return this.http.get<Job>(`${this.baseUrl}/api/jobs/${id}`, {
+      headers: { accept: 'application/ld+json' }
+    });
   }
 
   createJob(job: Partial<Job>): Observable<Job> {
-    return this.http.post<Job>(`${this.baseUrl}/api/jobs`, job);
+    return this.http.post<Job>(`${this.baseUrl}/api/jobs`, job, {
+      headers: {
+        accept: 'application/ld+json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   updateJob(id: number | string, job: Partial<Job>): Observable<Job> {
-    return this.http.patch<Job>(`${this.baseUrl}/api/jobs/${id}`, job);
+    return this.http.patch<Job>(`${this.baseUrl}/api/jobs/${id}`, job, {
+      headers: {
+        accept: 'application/ld+json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   deleteJob(id: number | string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/api/jobs/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/api/jobs/${id}`, {
+      headers: { accept: 'application/ld+json' }
+    });
   }
 }

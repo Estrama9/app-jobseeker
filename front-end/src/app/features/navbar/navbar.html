@@ -1,0 +1,18 @@
+<nav class="bg-gray-800 text-gray-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <div class="flex-shrink-0">
+      <img class="h-8 w-auto" src="" />
+    </div>
+
+    <!-- Menu desktop -->
+    <div class="hidden sm:flex space-x-4">
+      <a href="" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">HOME</a>
+      <a href="#" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Team</a>
+      <a href="#" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+      <a routerLink="/jobs" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">JOBS</a>
+     <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 cursor-pointer" role="menuitem">Sign out</a>
+
+    </div>
+  </div>
+</nav>

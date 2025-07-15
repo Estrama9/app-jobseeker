@@ -49,6 +49,7 @@ class Job
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read_job'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

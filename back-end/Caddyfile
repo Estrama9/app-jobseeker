@@ -1,11 +1,15 @@
+# back‑end proxy
 api.jobseeker.wip {
     tls internal
 
     reverse_proxy localhost:8000
 }
 
+# front‑end proxy
 jobseeker.wip {
     tls internal
 
     reverse_proxy localhost:4200
 }
+
+
