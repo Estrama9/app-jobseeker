@@ -14,7 +14,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class Login {
   private authService = inject(AuthService);
-  private apiAuth = inject(ApiAuthService);
+  private apiAuthService = inject(ApiAuthService);
   private router = inject(Router);
 
   loginForm = new FormGroup({
@@ -22,21 +22,17 @@ export class Login {
     password: new FormControl('', Validators.required),
   });
 
-  onSubmit(): void {
-    console.log("pressed");
+  async onSubmit() {
     if (this.loginForm.invalid) return;
 
     const { email, password } = this.loginForm.value;
 
-    this.apiAuth.login({ email: email!, password: password! }).subscribe({
-      next: (res) => {
-        // console.log('Login response:', res);
-        this.authService.setToken('');
-        // console.log('Login successful');
-        this.router.navigate(['/']);
+    this.apiAuthService.login({ email: email!, password: password! }).subscribe({
+      next: async () => {
+        await this.authService.initSession(); // ✅ Wait for session state
+        this.router.navigate(['/']); // ✅ Guard now sees you're logged in
       },
-      error: (err) => {
-        // console.error('Login failed:', err);
+      error: () => {
         alert('Invalid credentials');
       }
     });

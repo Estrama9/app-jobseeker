@@ -1,26 +1,68 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, catchError, firstValueFrom, of, tap } from 'rxjs';
+import { User } from '../interfaces/UserInterface';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly TOKEN_NAME = 'auth_token';
+  private loggedIn$ = new BehaviorSubject<boolean>(false);
+  private user$ = new BehaviorSubject<User | null>(null);
 
-  getToken(): string | null {
-    const match = document.cookie.match(new RegExp(`(^| )${this.TOKEN_NAME}=([^;]+)`));
-    return match ? decodeURIComponent(match[2]) : null;
-  }
+  constructor(private http: HttpClient) {}
 
-  // Optional: to set the token (for login)
-  setToken(token: string, days = 7): void {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${this.TOKEN_NAME}=${encodeURIComponent(token)}; expires=${expires}; path=/; Secure; SameSite=Lax`;
-  }
+  /** Call on app startup or after login/logout */
+  initSession(): Promise<void> {
+  return firstValueFrom(
+    this.http.get('https://api.jobseeker.wip/api/me', {
+      withCredentials: true,
+      headers: new HttpHeaders({ Accept: 'application/ld+json, application/json' }),
+    }).pipe(
+      tap(user => {
+        console.log('✅ initSession: user info', user);
+        this.loggedIn$.next(true);
+      }),
+      catchError(err => {
+        console.warn('❌ initSession: not logged in or parsing failed', err);
+        this.loggedIn$.next(false);
+        return of(null);
+      }),
+    )
+  ).then(() => {});
+}
 
-  // Optional: to remove it (for logout)
-  clearToken(): void {
-    document.cookie = `${this.TOKEN_NAME}=; Max-Age=0; path=/; Secure; SameSite=Lax`;
-  }
 
+  /** Synchronous: get current login state */
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.loggedIn$.value;
   }
+
+  /** Observable: watch login state changes */
+  isLoggedIn$() {
+    return this.loggedIn$.asObservable();
+  }
+
+  /** Observable: user info */
+  getUser$() {
+    return this.user$.asObservable();
+  }
+
+  /** Synchronous: current user */
+  getCurrentUser(): User | null {
+    return this.user$.value;
+  }
+
+ logout() {
+    return this.http.post('https://api.jobseeker.wip/api/logout', {}, { withCredentials: true }).pipe(
+      tap(() => {
+        this.user$.next(null);
+        this.loggedIn$.next(false);
+        console.log('👋 User logged out');
+      }),
+      catchError(err => {
+        console.error('Logout failed', err);
+        return of(null);
+      })
+    );
+  }
+
 }

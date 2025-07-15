@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component  } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './core/services/AuthService';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,18 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+   constructor(private auth: AuthService) {}
+
+ngOnInit() {
+  this.auth.getUser$().subscribe(user => {
+    if (user) {
+      console.log('👤 Utilisateur :', user.fullname, user.email);
+    }
+  });
+
+  this.auth.isLoggedIn$().subscribe(isIn => {
+    console.log('🔒 Connecté ?', isIn);
+  });
+}
 
 }

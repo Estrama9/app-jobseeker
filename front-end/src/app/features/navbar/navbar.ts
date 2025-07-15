@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/AuthService';
 
 @Component({
   selector: 'app-navbar',
@@ -9,11 +10,11 @@ import { Router } from '@angular/router';
   styleUrl: './navbar.css'
 })
 export class Navbar {
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   logout() {
-    // Clear authentication state (example with localStorage)
-    localStorage.removeItem('token'); // Or whatever key you use
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(['/login']);
+    });
   }
 }
