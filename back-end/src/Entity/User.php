@@ -6,8 +6,6 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Enum\City;
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -81,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      #[Groups(['write_user'])]
     private ?string $plainPassword = null;
 
-    #[Groups(['write_user'])]
+    #[Groups(['read_user', 'write_user'])]
     #[ORM\Column(type: 'json')]
     private array $roles = [UserRole::USER->value];
 
@@ -91,7 +89,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $fullname = null;
 
      #[ORM\Column(length: 255, nullable: true)]
-     #[Groups(['read_user', 'write_user'])]
     private ?string $country = 'France';
 
     #[ORM\Column(enumType: City::class, nullable: true)]
@@ -106,6 +103,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $resetTokenExpiresAt = null;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Candidate $candidate = null;
@@ -385,5 +387,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getResetToken(): ?string { return $this->resetToken; }
+    public function setResetToken(?string $token): static { $this->resetToken = $token; return $this; }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeInterface { return $this->resetTokenExpiresAt; }
+    public function setResetTokenExpiresAt(?\DateTimeInterface $date): static { $this->resetTokenExpiresAt = $date; return $this; }
 
 }

@@ -11,49 +11,61 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   /** Call on app startup or after login/logout */
-  initSession(): Promise<void> {
-  return firstValueFrom(
-    this.http.get('https://api.jobseeker.wip/api/me', {
-      withCredentials: true,
-      headers: new HttpHeaders({ Accept: 'application/ld+json, application/json' }),
-    }).pipe(
-      tap(user => {
-        console.log('✅ initSession: user info', user);
-        this.loggedIn$.next(true);
-      }),
-      catchError(err => {
-        console.warn('❌ initSession: not logged in or parsing failed', err);
-        this.loggedIn$.next(false);
-        return of(null);
-      }),
-    )
-  ).then(() => {});
-}
+  // 🧩 process
+  async loadCurrentUser(): Promise<void> {
+    return firstValueFrom(
+      //📥 fetch
+      this.http.get('https://api.jobseeker.wip/api/me', {
+        withCredentials: true,
+        headers: new HttpHeaders({ Accept: 'application/ld+json, application/json' }),
+      }).pipe(
+        tap(user => {
+          console.log('✅ initSession: user info', user);
+          //💾 set
+          this.user$.next(user as User);
+          //💾 set
+          this.loggedIn$.next(true);
+        }),
+        catchError(err => {
+          console.warn('❌ initSession: not logged in or parsing failed', err);
+          //💾 set
+          this.loggedIn$.next(false);
+          return of(null);
+        }),
+      )
+    ).then(() => {});
+  }
 
 
   /** Synchronous: get current login state */
-  isLoggedIn(): boolean {
-    return this.loggedIn$.value;
-  }
+  // 🔧 is
+  // isLoggedIn(): boolean {
+  //   return this.loggedIn$.value;
+  // }
 
   /** Observable: watch login state changes */
+  // 🔧 is
   isLoggedIn$() {
     return this.loggedIn$.asObservable();
   }
 
   /** Observable: user info */
+  // 📥 get
   getUser$() {
     return this.user$.asObservable();
   }
 
-  /** Synchronous: current user */
-  getCurrentUser(): User | null {
-    return this.user$.value;
-  }
+  //** Synchronous: current user */
+  //📥 get
+  // getCurrentUser(): User | null {
+  //   return this.user$.value;
+  // }
 
  logout() {
+  // 📥 fetch
     return this.http.post('https://api.jobseeker.wip/api/logout', {}, { withCredentials: true }).pipe(
       tap(() => {
+        //💾 set
         this.user$.next(null);
         this.loggedIn$.next(false);
         console.log('👋 User logged out');

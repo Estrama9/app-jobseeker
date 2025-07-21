@@ -1,1 +1,29 @@
-<app-navbar></app-navbar>
+<div class="bg-[#f7f7f8]">
+  <div class="w-[70%] m-auto">
+    <app-navbar></app-navbar>
+  </div>
+</div>
+<div class="bg-white">
+  <div class="w-[70%] m-auto">
+    <div class="flex bg-[white] justify-between">
+      <div class="flex gap-4">
+        <a href="" class="py-3 hover:border-b">Home</a>
+        <a href="#" class="py-3 hover:border-b">Find Job</a>
+        <a href="#" class="py-3 hover:border-b">Employers</a>
+        <a routerLink="/jobs" class="py-3 hover:border-b">Candidates</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button (click)="logout()" role="menuitem" class="py-3 hover:border-b">
+          @if(loggedIn$ | async)
+          {
+            Sign out
+          }
+          @else
+          {
+            Sign in
+          }</button>
+        <button>Post a Job</button>
+      </div>
+    </div>
+  </div>
+</div>

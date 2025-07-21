@@ -9,7 +9,9 @@ import { AuthService } from './core/services/AuthService';
   styleUrl: './app.css'
 })
 export class App {
-   constructor(private auth: AuthService) {}
+   constructor(private auth: AuthService) {
+    this.auth.loadCurrentUser();
+   }
 
 ngOnInit() {
   this.auth.getUser$().subscribe(user => {

@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
 
     provideAppInitializer(() => {
       const authService = inject(AuthService);
-      return authService.initSession();
+      return authService.loadCurrentUser();
     }),
   ],
 };

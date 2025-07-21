@@ -33,6 +33,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findUnconfirmedBefore(\DateTimeImmutable $threshold): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isVerified = :confirmed')
+            ->andWhere('u.createdAt <= :threshold')
+            ->setParameter('confirmed', false)
+            ->setParameter('threshold', $threshold)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

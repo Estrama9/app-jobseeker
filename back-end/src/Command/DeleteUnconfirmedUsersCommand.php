@@ -1,7 +1,5 @@
 <?php
 
-// src/Command/DeleteUnconfirmedUsersCommand.php
-
 namespace App\Command;
 
 use App\Repository\UserRepository;
@@ -23,7 +21,7 @@ class DeleteUnconfirmedUsersCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $threshold = new \DateTimeImmutable('-1 hour', new \DateTimeZone('Europe/Paris'));
+        $threshold = new \DateTimeImmutable('-1 hour', new \DateTimeZone('UTC'));
 
         // Recherche des utilisateurs non confirmés créés avant le seuil
         $users = $this->userRepository->findUnconfirmedBefore($threshold);
