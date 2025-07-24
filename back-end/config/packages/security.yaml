@@ -36,6 +36,7 @@ security:
                 secret: '%kernel.secret%'
                 lifetime: 604800
                 path: /
+                domain: jobseeker.wip
                 always_remember_me: true
 
             json_login:

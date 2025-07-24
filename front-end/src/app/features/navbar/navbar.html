@@ -1,15 +1,198 @@
-<nav class="flex justify-between text-[#7e848c]">
-  <div class="flex gap-4">
-      <a href="" class="py-3 hover:border-b">Home</a>
-      <a href="#" class="py-3 hover:border-b">Find Job</a>
-      <a href="#" class="py-3 hover:border-b">Employers</a>
-      <a routerLink="/jobs" class="py-3 hover:border-b">Candidates</a>
+<div class="bg-[#f7f7f8]">
+  <div class="w-[70%] m-auto">
+    <nav class="flex justify-between text-[#7e848c]">
+      <div class="flex gap-4 items-center">
+        <a href="" class="py-3 hover:border-b hover:text-[#0a65cc]">Home</a>
+        @if (user$ | async; as user) {
+          <a [routerLink]="user.roles.includes('ROLE_EMPLOYER') ? '/find-candidate' : '/find-job'"
+          class="py-3 hover:border-b hover:text-[#0a65cc]">
+          @if(user.roles.includes('ROLE_EMPLOYER'))
+          {
+            Find Candidates
+          } @else {
+            Find Job
+          }
+        </a>
+        } @else {
+          <a
+          [routerLink]="'/find-job'"
+          class="py-3 hover:border-b hover:text-[#0a65cc]"
+        >
+          Find Job
+        </a>
+        }
+        @if(user$ | async; as user){
+          <a [routerLink]="user.roles.includes('ROLE_EMPLOYER') ? '/dasboard' : '/find-Employer'" class="py-3 hover:border-b hover:text-[#0a65cc]">
+          @if(user.roles.includes('ROLE_EMPLOYER')) {
+            Dashboard
+          }@else {
+            Find Employer
+          }
+        </a>
+        }@else {
+          <a [routerLink]="'/employers'" class="py-3 hover:border-b hover:text-[#0a65cc]">Employers</a>
+        }
+        @if(user$ | async; as user) {
+          <a [routerLink]="user.roles.includes('ROLE_EMPLOYER') ? '/jobs' : '/dashboard'" class="py-3 hover:border-b hover:text-[#0a65cc]">
+            @if(user.roles.includes('ROLE_EMPLOYER')) {
+              My jobs
+            }@else {
+              Dashboard
+            }
+          </a>
+        }@else {
+          <a [routerLink]="'/candidates'" class="py-3 hover:border-b hover:text-[#0a65cc]">Candidates</a>
+        }
+        @if(user$ | async; as user) {
+          <a [routerLink]="'/applications'" class="py-3 hover:border-b hover:text-[#0a65cc]">
+            @if(user.roles.includes('ROLE_EMPLOYER')) {
+              Applications
+            }@else {
+              My Applications
+            }
+          </a>
+        }
+      </div>
+      <div class="flex gap-4 items-center">
+        <p class="py-3">0758245409</p>
+        <!-- <select class="py-3 hover:border-b hover:text-[#0a65cc]" name="" id="">
+          <option value="">English</option>
+        </select> -->
+        <div class="flex mt-2 mb-2">
+          <div class="relative">
+            <button type="button" (click)="toggleDropdown1()" aria-expanded="isOpen" aria-haspopup="listbox" aria-labelledby="listbox-label" class="grid w-full cursor-default grid-cols-1 py-2 px-3 rounded-md text-left text-gray-900 sm:text-sm/6">
+              <span class="col-start-1 row-start-1 flex items-center gap-3 pr-6">
+                <img [src]="dropdown1[0].selectedUser.flag" alt="" class="size-5 shrink-0 rounded-full" />
+                <span class="block truncate">{{ dropdown1[0].selectedUser.name }}</span>
+              </span>
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </button>
+            @if (dropdown1[0].isOpen) {
+              <ul role="listbox" tabindex="0" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3" class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm">
+                @for(option of dropdown1[0].options; track option.id) {
+                  <li id="listbox-option-0" role="option" class="relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none">
+                    <div class="flex items-center" (click)="selectUser1(option)">
+                      <img [src]="option.flag" alt="" class="size-5 shrink-0 rounded-full"/>
+                      <span class="ml-3 block truncate font-normal">{{ option.name }}</span>
+                    </div>
+                    @if (option.id === dropdown1[0].selectedUser.id) {
+                      <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600">
+                        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
+                          <path d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" fill-rule="evenodd" />
+                        </svg>
+                      </span>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+      </div>
+    </nav>
   </div>
-  <div class="flex gap-4">
-    <p class="py-3 hover:border-b">0758245409</p>
-    <select class="py-3 hover:border-b" name="" id="">
-      <option value="">English</option>
-    </select>
+</div>
+<div class="bg-white">
+  <div class="w-[70%] m-auto">
+    <div class="flex bg-[white] justify-between">
+      <div class="flex gap-4 py-2">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="blue-600 h-6 w-6"
+            fill=#0a65cc><path d="M184 48l144 0c4.4 0 8 3.6 8 8l0 40L176 96l0-40c0-4.4 3.6-8 8-8zm-56 8l0 40L64 96C28.7 96 0 124.7 0 160l0 96 192 0 128 0 192 0 0-96c0-35.3-28.7-64-64-64l-64 0 0-40c0-30.9-25.1-56-56-56L184 0c-30.9 0-56 25.1-56 56zM512 288l-192 0 0 32c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-32L0 288 0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-128z"/></svg>
+          <h2 routerLink="/" class="text-xl cursor-pointer">Jobseeker</h2>
+        </div>
+        <div class="flex mt-2 mb-2">
+          <div class="border border-[#eaeaea] rounded rounded-r-none">
+            <div class="relative">
+              <button type="button" (click)="toggleDropdown2()" aria-expanded="isOpen" aria-haspopup="listbox" aria-labelledby="listbox-label" class="grid w-full cursor-default grid-cols-1 py-2 px-3 rounded-md bg-white text-left text-gray-900 sm:text-sm/6">
+                <span class="col-start-1 row-start-1 flex items-center gap-3 pr-6">
+                  <img [src]="dropdown2[0].selectedUser.flag" alt="" class="size-5 shrink-0 rounded-full" />
+                  <span class="block truncate">{{ dropdown2[0].selectedUser.name }}</span>
+                </span>
+                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                  <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+              </button>
+              @if (dropdown2[0].isOpen) {
+                <ul role="listbox" tabindex="0" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3" class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm">
+                  @for (option of dropdown2[0].options; track option.id) {
+                    <li id="listbox-option-0" role="option" class="relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none">
+                      <div class="flex items-center" (click)="selectUser2(option)">
+                        <img [src]="option.flag" alt="" class="size-5 shrink-0 rounded-full"/>
+                        <span class="ml-3 block truncate font-normal">{{ option.name }}</span>
+                      </div>
+                      @if (option.id === dropdown2[0].selectedUser.id) {
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600">
+                          <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5">
+                            <path d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" fill-rule="evenodd" />
+                          </svg>
+                        </span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+          <div class="flex gap-2 items-center border border-[#eaeaea] border-l-0 rounded rounded-l-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="blue-600 h-6 w-6 pl-2"
+            fill=#0a65cc>
+              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+            </svg>
+            <input type="text" class="w-[400px] py-2 px-3 outline-none">
+          </div>
+        </div>
+      </div>
+      @if(user$ | async; as user) {
+        @if(user.roles.includes('ROLE_CANDIDATE')) {
+          <div class="flex items-center gap-4 py-2">
+            <p class="font-bold">Hi, {{ user.fullname }}</p>
+            <button (click)="logout()" role="menuitem" class="border rounded px-3 py-2 text-[#0a65cc]">
+              @if(loggedIn$ | async)
+              {
+                Sign out
+              }
+              @else
+              {
+                Sign in
+              }
+            </button>
+          </div>
+        }@else {
+          <div class="flex items-center gap-4 py-2">
+            <button (click)="logout()" role="menuitem" class="border rounded px-3 py-2 text-[#0a65cc]">
+              @if(loggedIn$ | async)
+              {
+                Sign out
+              }
+              @else
+              {
+                Sign in
+              }
+            </button>
+            <button class="border rounded px-3 py-2 bg-[#0a65cc] text-white">Post a Job</button>
+          </div>
+        }
+      }@else {
+        <div class="flex items-center gap-4 py-2">
+          <button (click)="logout()" role="menuitem" class="border rounded px-3 py-2 text-[#0a65cc]">
+            @if(loggedIn$ | async)
+            {
+              Sign out
+            }
+            @else
+            {
+              Sign in
+            }
+          </button>
+          <button class="border rounded px-3 py-2 bg-[#0a65cc] text-white">Post a Job</button>
+        </div>
+      }
+    </div>
   </div>
-</nav>
+<!-- </div> -->
+
+
 

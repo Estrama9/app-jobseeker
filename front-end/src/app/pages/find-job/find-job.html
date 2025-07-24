@@ -1,0 +1,45 @@
+<app-navbar></app-navbar>
+<div class="bg-[#f7f7f8]">
+  <div class="w-[70%] m-auto">
+    <div class="flex justify-between text-[#7e848c] py-5">
+      <div>
+        Find Job
+      </div>
+      <div>
+        <p>Home / Find job</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="w-[70%] m-auto">
+  <div class="flex flex-col ">
+    <div class="flex py-5">
+      <div class="flex flex-3 gap-1 border border-[#eaeaea] border-r-0 rounded rounded-r-none items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="blue-600 h-6 w-6 pl-2" fill=#0a65cc>
+          <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+        </svg>
+        <input class="py-3 pl-2 w-full outline-none" type="text" name="" id="" placeholder="Search">
+      </div>
+      <div class="flex flex-2 gap-1 border border-[#eaeaea] border-r-0 items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="blue-600 h-6 w-6 pl-2" fill=#0a65cc>
+          <path d="M128 252.6C128 148.4 214 64 320 64C426 64 512 148.4 512 252.6C512 371.9 391.8 514.9 341.6 569.4C329.8 582.2 310.1 582.2 298.3 569.4C248.1 514.9 127.9 371.9 127.9 252.6zM320 320C355.3 320 384 291.3 384 256C384 220.7 355.3 192 320 192C284.7 192 256 220.7 256 256C256 291.3 284.7 320 320 320z"/>
+        </svg>
+        <input class="py-3 pl-2 w-full outline-none" type="text" placeholder="city">
+      </div>
+      <div class="flex items-center py-2 px-3 gap-2 border border-[#eaeaea] border-l-0 rounded rounded-l-none">
+        <div class="flex items-center py-1 px-3 gap-2 bg-[#eaeaea] rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="blue-600 h-4 w-4" fill=FFFFFF>
+            <path d="M96 128C83.1 128 71.4 135.8 66.4 147.8C61.4 159.8 64.2 173.5 73.4 182.6L256 365.3L256 480C256 488.5 259.4 496.6 265.4 502.6L329.4 566.6C338.6 575.8 352.3 578.5 364.3 573.5C376.3 568.5 384 556.9 384 544L384 365.3L566.6 182.7C575.8 173.5 578.5 159.8 573.5 147.8C568.5 135.8 556.9 128 544 128L96 128z"/>
+          </svg>
+          <button>filter</button>
+        </div>
+      <a class="bg-[#0a65cc] text-white py-1 px-3 rounded" href="">Find job</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="w-[70%] m-auto">
+  <app-job-list></app-job-list>
+</div>
+

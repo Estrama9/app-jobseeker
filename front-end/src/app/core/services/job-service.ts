@@ -19,6 +19,7 @@ export class JobService {
 
   getJobs(): Observable<Job[]> {
   return this.http.get<ApiResponse<Job>>(`${this.baseUrl}/api/jobs`, {
+    withCredentials: true,
     headers: { accept: 'application/ld+json' }
   }).pipe(
     map(response => response.member) // Extract the array of jobs
@@ -27,12 +28,14 @@ export class JobService {
 
   getJob(id: number | string): Observable<Job> {
     return this.http.get<Job>(`${this.baseUrl}/api/jobs/${id}`, {
+      withCredentials: true,
       headers: { accept: 'application/ld+json' }
     });
   }
 
   createJob(job: Partial<Job>): Observable<Job> {
     return this.http.post<Job>(`${this.baseUrl}/api/jobs`, job, {
+      withCredentials: true,
       headers: {
         accept: 'application/ld+json',
         'Content-Type': 'application/json'
@@ -42,6 +45,7 @@ export class JobService {
 
   updateJob(id: number | string, job: Partial<Job>): Observable<Job> {
     return this.http.patch<Job>(`${this.baseUrl}/api/jobs/${id}`, job, {
+      withCredentials: true,
       headers: {
         accept: 'application/ld+json',
         'Content-Type': 'application/json'
@@ -51,6 +55,7 @@ export class JobService {
 
   deleteJob(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/api/jobs/${id}`, {
+      withCredentials: true,
       headers: { accept: 'application/ld+json' }
     });
   }

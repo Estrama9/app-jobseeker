@@ -1,16 +1,25 @@
 import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
-import { JobList } from './shared/components/job-list/job-list';
+import { JobList } from './pages/job-list/job-list';
 import { Register } from './pages/register/register';
 import { AuthGuard } from './core/guards/AuthGuard';
 import { GuestGuard } from './core/guards/GuestGuard';
-import { ResetPassword } from './shared/components/reset-password/reset-password';
-import { ResetRequest } from './shared/components/reset-request/reset-request';
+import { ResetPassword } from './pages/reset-password/reset-password';
+import { ResetRequest } from './pages/reset-request/reset-request';
+import { FindJob } from './pages/find-job/find-job';
+import { JobDetails } from './pages/job-details/job-details';
 
 export const routes: Routes = [
   // { path: '', component: Home, canActivate: [AuthGuard] },
   { path: '', component: Home },
+
+  { path: 'find-job', component: FindJob },
+
+  // Only allow authenticated users
+  { path: 'jobs', component: JobList, canActivate: [AuthGuard] },
+
+  { path: 'jobs/:id', component: JobDetails, canActivate: [AuthGuard] },
 
   // Only allow guests (not logged in)
   {
@@ -23,9 +32,6 @@ export const routes: Routes = [
   { path: 'reset-password-request', component: ResetRequest, canActivate: [GuestGuard] },
 
   { path: 'reset-password', component: ResetPassword, canActivate: [GuestGuard] },
-
-  // Only allow authenticated users
-  { path: 'jobs', component: JobList, canActivate: [AuthGuard] },
 
   // Optional: catch-all redirect to home
   { path: '**', redirectTo: '' },

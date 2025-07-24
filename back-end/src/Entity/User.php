@@ -26,15 +26,7 @@ use App\DataPersister\UserEmailVerification;
     normalizationContext: ['groups' => ['read_user']],
     denormalizationContext: ['groups' => ['write_user']],
 )]
-#[Api\GetCollection(
-    security: 'is_granted("ROLE_ADMIN")',
-    securityMessage: 'Only admins can list users.'
-)]
-// #[Api\Get(
-//     security: 'is_granted("ROLE_ADMIN")',
-//     securityMessage: 'Only admins can see user details.'
 
-// )]
 #[Api\Get(
     uriTemplate: '/me',
     security: 'is_granted("ROLE_USER")',
@@ -44,6 +36,13 @@ use App\DataPersister\UserEmailVerification;
         summary: 'Show current user profile'
     )
 )]
+
+
+#[Api\GetCollection(
+    security: 'is_granted("ROLE_ADMIN")',
+    securityMessage: 'Only admins can list users.'
+)]
+
 #[Api\Post(
     processor: UserEmailVerification::class,
     security:'true' // accessible à tous pour créer un utilisateur

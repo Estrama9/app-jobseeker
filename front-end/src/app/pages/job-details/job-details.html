@@ -1,0 +1,11 @@
+<p class="text-sm text-gray-500">Job Details</p>
+
+<div class="mt-6">
+  @if (job$ | async; as job) {
+    <h1 class="text-3xl font-bold">{{ job.title }}</h1>
+    <p class="text-lg text-gray-700">{{ job.jobType }}</p>
+    <p class="text-md text-gray-500">{{ job.city }}</p>
+  } @else {
+    <p class="text-gray-500">Loading job...</p>
+  }
+</div>

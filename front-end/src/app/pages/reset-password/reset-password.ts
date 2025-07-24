@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiAuthService } from '../../../core/services/ApiAuthService';
-import { passwordMatchValidator } from '../../../core/validators/PasswordMatchValidator';
+import { ApiAuthService } from '../../core/services/ApiAuthService';
+import { passwordMatchValidator } from '../../core/validators/PasswordMatchValidator';
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiAuthService } from '../../../core/services/ApiAuthService';
+import { ApiAuthService } from '../../core/services/ApiAuthService';
 import { RouterLink } from '@angular/router';
 import { delay, dematerialize, materialize } from 'rxjs';
 
