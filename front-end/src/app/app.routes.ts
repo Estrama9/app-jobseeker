@@ -10,29 +10,26 @@ import { ResetRequest } from './pages/reset-request/reset-request';
 import { FindJob } from './pages/find-job/find-job';
 import { JobDetails } from './pages/job-details/job-details';
 
+
 export const routes: Routes = [
-  // { path: '', component: Home, canActivate: [AuthGuard] },
-  { path: '', component: Home },
+  // Home route with static breadcrumb label
+  { path: '', component: Home, data: { breadcrumb: 'Home' } },
 
-  { path: 'find-job', component: FindJob },
+  // Find Job route with static breadcrumb label
+  { path: 'find-job', component: FindJob, data: { breadcrumb: 'Find Job' } },
 
-  // Only allow authenticated users
-  { path: 'jobs', component: JobList, canActivate: [AuthGuard] },
+  // Jobs list route (only for authenticated users in a real app)
+  { path: 'jobs', component: JobList, canActivate: [AuthGuard], data: { breadcrumb: 'Jobs' } },
 
-  { path: 'jobs/:id', component: JobDetails, canActivate: [AuthGuard] },
+  // Job details route with a resolver for dynamic breadcrumb label
+  { path: 'jobs/:id', component: JobDetails, canActivate: [AuthGuard]},
 
-  // Only allow guests (not logged in)
-  {
-  path: 'login', component : Login, canActivate: [GuestGuard] },
+  // Authentication routes (only for guests in a real app)
+  { path: 'login', component: Login, canActivate: [GuestGuard], data: { breadcrumb: 'Login' } },
+  { path: 'register', component: Register, canActivate: [GuestGuard], data: { breadcrumb: 'Register' } },
+  { path: 'reset-password-request', component: ResetRequest, canActivate: [GuestGuard], data: { breadcrumb: 'Reset Password Request' } },
+  { path: 'reset-password', component: ResetPassword, canActivate: [GuestGuard], data: { breadcrumb: 'Reset Password' } },
 
-  { path: 'register', component: Register, canActivate: [GuestGuard] },
-
-  // { path: 'resetPassword', component: ResetPassword, canActivate: [GuestGuard] },
-
-  { path: 'reset-password-request', component: ResetRequest, canActivate: [GuestGuard] },
-
-  { path: 'reset-password', component: ResetPassword, canActivate: [GuestGuard] },
-
-  // Optional: catch-all redirect to home
+  // Catch-all redirect to home for any unmatched routes
   { path: '**', redirectTo: '' },
 ];

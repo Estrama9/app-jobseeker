@@ -1,43 +1,84 @@
-
-
-<div class="flex flex-wrap gap-4 pt-5">
-  @if (jobs$ | async; as jobs) {
-    @for (job of jobs; track job.id) {
-      <div [routerLink]="['/jobs', job.id]" class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200">
-        <h3 class="text-lg font-semibold truncate"> {{ job.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
-      </div>
-    }
-    @for (job of jobs; track job.id) {
-      <div [routerLink]="['/jobs', job.id]" class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200">
-        <h3 class="text-lg font-semibold truncate"> {{ job.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
-      </div>
-    }
-    @for (job of jobs; track job.id) {
-      <div [routerLink]="['/jobs', job.id]" class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200">
-        <h3 class="text-lg font-semibold truncate"> {{ job.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
-      </div>
-    }
-    @for (job of jobs; track job.id) {
-      <div [routerLink]="['/jobs', job.id]" class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200">
-        <h3 class="text-lg font-semibold truncate"> {{ job.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
-      </div>
-    }
-    @for (job of jobs; track job.id) {
-      <div [routerLink]="['/jobs', job.id]" class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200">
-        <h3 class="text-lg font-semibold truncate"> {{ job.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
-      </div>
-    }
-    @for (job of jobs; track job.id) {
-      <div [routerLink]="['/jobs', job.id]" class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200">
-        <h3 class="text-lg font-semibold truncate"> {{ job.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
-      </div>
-    }
+<div class="flex flex-wrap gap-4 pt-5 justify-between">
+  <!-- Unwrap isLoading$ once at the top level -->
+  @if (isLoading$ | async) {
+    <div class="loading-spinner">Loading jobs...</div>
   } @else {
-    <p class="text-center text-gray-500">Loading jobs...</p>
+    <!-- If not loading, then check for error -->
+    @if (error$ | async; as errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+    } @else {
+      <!-- If not loading AND no error, then unwrap jobs$ -->
+      @if (jobs$ | async; as jobs) {
+        @if (jobs.length === 0) {
+          <p>No jobs found matching your criteria.</p>
+        } @else {
+          @for (job of jobs; track job.id) {
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+            <div
+              [routerLink]="['/jobs', job.id]"
+              class="basis-[32%] p-4 border border-[#eaeaea] rounded shadow-sm hover:shadow transition duration-200"
+            >
+              <h3 class="text-lg font-semibold truncate">{{ job.title }}</h3>
+              <p class="text-sm text-gray-600 truncate">{{ job.city }}</p>
+            </div>
+          }
+        }
+      }
+    }
   }
+</div>

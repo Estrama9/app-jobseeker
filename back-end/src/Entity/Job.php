@@ -20,9 +20,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: JobRepository::class)]
 #[Api\ApiResource(
     normalizationContext: ['groups' => ['read_job']],
-    denormalizationContext: ['groups' => ['write_job']]
+    denormalizationContext: ['groups' => ['write_job']],
+    security: 'is_granted("PUBLIC_ACCESS")'
 )]
-#[Api\GetCollection(forceEager: false)]
+#[Api\GetCollection(
+    security: "is_granted('PUBLIC_ACCESS')",
+    forceEager: false
+)]
 #[Api\Get(
     security: 'is_granted("ROLE_CANDIDATE") or object.getCompany().getUser() == user',
     securityMessage: 'Only the employer himself can access this data.',

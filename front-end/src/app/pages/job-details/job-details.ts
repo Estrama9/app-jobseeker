@@ -4,10 +4,11 @@ import { Observable, switchMap } from 'rxjs';
 import { Job } from '../../core/interfaces/JobInterface';
 import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { Navbar } from '../../features/navbar/navbar';
 
 @Component({
   selector: 'app-job-details',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, Navbar],
   templateUrl: './job-details.html',
   styleUrl: './job-details.css'
 })

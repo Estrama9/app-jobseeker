@@ -1,11 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/AuthService';
 import { AsyncPipe } from '@angular/common';
+import { filter } from 'rxjs';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, AsyncPipe],
+  imports: [RouterLink, AsyncPipe, ReactiveFormsModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })
@@ -14,6 +16,25 @@ export class Navbar {
   router = inject(Router);
   authService = inject(AuthService);
   loggedIn$ = this.authService.isLoggedIn$();
+
+  path = '';
+
+  constructor() {
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.path = this.router.url.split('/')[1] || 'home';
+      });
+  }
+
+  get currentRouteLabel(): string {
+    const segment = this.router.url.split('/')[1] || 'home';
+    return segment
+      .split('-')                           // coupe par les "-"
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // majuscules
+      .join(' ');
+  }
+
 
   logout() {
     this.authService.logout().subscribe(() => {
@@ -72,6 +93,19 @@ export class Navbar {
   selectUser2(user: any) {
     this.dropdown2[0].selectedUser = user;
     this.dropdown2[0].isOpen = false;
+  }
+
+  searchTerm = new FormControl('');
+
+  searchValue = ''
+
+
+  ngOnInit() {
+    if(this.path === "home") {
+      this.searchTerm.valueChanges.subscribe(val => {
+        this.searchValue = val?.trim().toLowerCase() || '';
+      });
+    }
   }
 
 }

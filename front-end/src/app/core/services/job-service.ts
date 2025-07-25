@@ -19,7 +19,7 @@ export class JobService {
 
   getJobs(): Observable<Job[]> {
   return this.http.get<ApiResponse<Job>>(`${this.baseUrl}/api/jobs`, {
-    withCredentials: true,
+    // withCredentials: true,
     headers: { accept: 'application/ld+json' }
   }).pipe(
     map(response => response.member) // Extract the array of jobs
