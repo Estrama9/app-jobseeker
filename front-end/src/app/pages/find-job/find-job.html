@@ -6,13 +6,13 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="blue-600 h-6 w-6 pl-2" fill=#0a65cc>
           <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
         </svg>
-        <input class="py-3 pl-2 w-full outline-none" type="text" name="search" id="search" placeholder="Search" [formControl] = "searchTitle">
+        <input class="py-3 pl-2 w-full outline-none placeholder:text-[#7e848c]" type="text" name="search" id="search" placeholder="Search" [formControl] = "searchTitle">
       </div>
       <div class="flex flex-2 gap-1 border border-[#eaeaea] border-r-0 items-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="blue-600 h-6 w-6 pl-2" fill=#0a65cc>
           <path d="M128 252.6C128 148.4 214 64 320 64C426 64 512 148.4 512 252.6C512 371.9 391.8 514.9 341.6 569.4C329.8 582.2 310.1 582.2 298.3 569.4C248.1 514.9 127.9 371.9 127.9 252.6zM320 320C355.3 320 384 291.3 384 256C384 220.7 355.3 192 320 192C284.7 192 256 220.7 256 256C256 291.3 284.7 320 320 320z"/>
         </svg>
-        <input class="py-3 pl-2 w-full outline-none" type="text" placeholder="City" [formControl] = "searchCity">
+        <input class="py-3 pl-2 w-full outline-none placeholder:text-[#7e848c]" type="text" placeholder="City" [formControl] = "searchCity">
       </div>
       <div class="flex items-center py-2 px-3 gap-2 border border-[#eaeaea] border-l-0 rounded rounded-l-none">
         <div class="flex items-center py-1 px-3 gap-2 bg-[#eaeaea] rounded">
@@ -26,7 +26,6 @@
     </div>
   </div>
 </div>
-
 <div class="w-[70%] m-auto">
   <app-job-list searchTitle={{title}} searchCity={{city}}></app-job-list>
 </div>
